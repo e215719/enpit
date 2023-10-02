@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>健康のためなら死んでもいい</h1>
+
+
+    <img src="{{ url_for('static', filename='images/LOGO_TBD2.png') }}">
+
+    <form action="/test" method="get">
+        <a href="/test" class="btn btn-flat" role="button"><span>勉強/筋トレをする！</span></a>
+    </form>
+
+
+<p id="test"><span style="font-size: 20px;">{{ my_dict.insert_something1 }}</span></p>
+<p><span style="font-size: 20px;">{{ my_dict.insert_something2 }}</span></p>
+
+
+
+</div>
+<script src="{{ url_for('static', filename='javascript/sample.js') }}"></script>
+{% endblock %}

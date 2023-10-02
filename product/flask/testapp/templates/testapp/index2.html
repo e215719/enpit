@@ -1,0 +1,126 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <h1> おい、俺の筋肉！！やるのかい！？</h1>
+    <h1>やらないのかい！？どっちなんだい！？</h1>
+</div>
+
+<style>
+    .btn,
+    #start-button {
+      font-size: 24px;
+    }
+
+    /* 新しいスタイルを追加 */
+    #timer-display {
+      font-size: 36px;
+      text-align: center;
+    }
+
+    /* スタイルを追加：ポップアップ */
+    #popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+    }
+</style>
+  
+
+
+<form id="timer-form" method="get">
+    <label for="minutes" style="font-size: 24px;">設定時間:</label>
+    <input type="number" id="minutes" name="minutes" min="0" max="60" value="0" style="font-size: 24px; width: 80px;">
+    <label for="minutes" style="font-size: 24px;">分:</label>
+    
+    <input type="number" id="seconds" name="seconds" min="0" max="59" value="10" style="font-size: 24px; width: 80px;">
+    <label for="seconds" style="font-size: 24px;">秒:</label>
+
+    <input type="button" id="start-button" value='やーーーーる！！ハッ（笑顔）'>
+</form>
+
+<audio id="audio-element" src="/static/audio/{{ audio_file }}"></audio>
+
+
+<div id="timer-display"></div>
+
+<form action="/" method="get">
+    <a href="/" class="btn btn-flat" role="button"><span>ホームに戻る!</span></a>
+</form>
+
+
+
+<!-- ポップアップ要素 -->
+<div id="popup">
+  <h2>タイマー終了！</h2>
+  <p>おめでとうございます！タイマーが終了しました。ハッ(笑顔)</p>
+  <button onclick="closePopup()">閉じる</button>
+</div>
+
+<script>
+    const timerDisplay = document.getElementById("timer-display");
+    const startButton = document.getElementById("start-button");
+    const audioElement = document.getElementById("audio-element");
+    const popup = document.getElementById("popup"); // ポップアップ要素
+
+    let intervalId; // Variable to hold the interval ID
+
+    startButton.addEventListener("click", () => {
+        const minutes = parseInt(document.getElementById("minutes").value);
+        const seconds = parseInt(document.getElementById("seconds").value);
+        let totalSeconds = minutes * 60 + seconds;
+
+        function countdown() {
+            let minutes = Math.floor(totalSeconds / 60);
+            let seconds = totalSeconds % 60;
+
+            minutes = minutes.toString().padStart(2, "0");
+            seconds = seconds.toString().padStart(2, "0");
+
+            timerDisplay.innerHTML = `<p>${minutes}:${seconds}</p>`;
+
+            totalSeconds--;
+
+            if (totalSeconds < 0) {
+                clearInterval(intervalId);
+                const audioFiles = ["SiriPower.mp3", "SiriYa.mp3", "SiriEnd4.mp3"];
+                const audioFile = audioFiles[Math.floor(Math.random() * audioFiles.length)];
+                audioElement.src = `/static/audio/${audioFile}`;
+                audioElement.play();
+                startButton.disabled = false; // Re-enable the start button
+                resetTimerDisplay(); // Reset the timer display and input fields
+
+                // カウントダウン終了後、ポップアップを表示
+                displayPopup();
+            }
+        }
+
+        intervalId = setInterval(countdown, 1000);
+        startButton.disabled = true;
+    });
+
+    function resetTimerDisplay() {
+        document.getElementById("minutes").value = "0";
+        document.getElementById("seconds").value = "10";
+        timerDisplay.innerHTML = "";
+    }
+
+    function displayPopup() {
+        popup.style.display = "block"; // ポップアップを表示
+    }
+
+    function closePopup() {
+        popup.style.display = "none"; // ポップアップを非表示
+    }
+
+</script>
+
+{% endblock %}
